@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="BLL.ImageEncoderLSB">
+    <Position X="3.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAEAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>ImageEncoders\ImageEncoderLSB.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BLL.ImageEncoderSimple">
+    <Position X="5.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>ImageEncoders\ImageEncoderSimple.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BLL.ImageEncoderFactory">
+    <Position X="4.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAAAAAgAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>ImageEncoders\ImageEncoderFactory.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="encoder" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="BLL.ImageSteganographer">
+    <Position X="8.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAEAAAAAAAAAAAAAgAAAAAAAEAAAAAAAAAAQAAABI=</HashCode>
+      <FileName>ImageSteganographer.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="encoder" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="BLL.Command">
+    <Position X="12.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Commads\Command.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BLL.IEncoder&lt;T&gt;" Collapsed="true">
+    <Position X="4.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IEncoder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BLL.IEncoderFactory&lt;T&gt;" Collapsed="true">
+    <Position X="4.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IEncoderFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BLL.ICommand" Collapsed="true">
+    <Position X="12.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Commads\ICommand.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="BLL.State">
+    <Position X="0.5" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ImageEncoders\State.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
