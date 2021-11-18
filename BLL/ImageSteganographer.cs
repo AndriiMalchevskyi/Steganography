@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BLL.Interfaces;
+using BLL.Models;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -6,7 +8,7 @@ using System.Text;
 
 namespace BLL
 {
-    public class ImageSteganographer
+    public class ImageSteganographer: ISteganographer
     {
         private IEncoder<Bitmap> encoder;
         public Bitmap Bitmap { get; private set; }
@@ -18,15 +20,15 @@ namespace BLL
 
         public ImageSteganographer(string imagePath)
         {
-            this.SetNewImage(imagePath);
+            this.SetNewSource(imagePath);
         }
 
-        public void SetNewImage(string imagePath)
+        public void SetNewSource(string imagePath)
         {
             this.Bitmap = new Bitmap(imagePath);
         }
 
-        public void SetNewImage(Bitmap image)
+        public void SetNewSource(Bitmap image)
         {
             var d = image.GetPixel(0, 0);
             this.Bitmap = image;
@@ -34,30 +36,49 @@ namespace BLL
             var t = 5;
         }
 
-        public void SetLSBAlgorithm()
+        public void SetNewSource(byte[] bytes)
+        {
+            ImageConverter converter = new ImageConverter();
+            this.Bitmap = (Bitmap)(converter.ConvertFrom(bytes));
+        }
+
+        public bool SetLSBAlgorithm()
         {
             IEncoderFactory<Bitmap> imageEncoderFactory = new ImageEncoderFactory();
-            this.encoder = imageEncoderFactory.GetEncoderLSB();
+            if (this.encoder == null || this.encoder.GetType() != imageEncoderFactory.GetEncoderLSB().GetType())
+            {
+                this.encoder = imageEncoderFactory.GetEncoderLSB();
+                return true;
+            }
+
+            return false;
         }
 
-        public void SetSimpleAlgorithm()
+        public bool SetSimpleAlgorithm()
         {
             IEncoderFactory<Bitmap> imageEncoderFactory = new ImageEncoderFactory();
-            this.encoder = imageEncoderFactory.GetEncoderSimple();
+            if (this.encoder == null || this.encoder.GetType() != imageEncoderFactory.GetEncoderSimple().GetType())
+            {
+                this.encoder = imageEncoderFactory.GetEncoderSimple();
+                return true;
+            }
+
+            return false;
         }
 
-        public Bitmap EncryptText(string text)
+        public byte[] Encrypt(string text)
         {
-            return encoder.EmbedText(this.Bitmap, text);
+            ImageConverter converter = new ImageConverter();
+            return (byte[])converter.ConvertTo(encoder.EmbedText(this.Bitmap, text), typeof(byte[]));
         }
 
-        public string DecryptText(string? key = null)
+        public byte[] Decrypt(string? key = null)
         {
             var d = this.Bitmap.GetPixel(0, 0);
-            return encoder.ExtractText(this.Bitmap, key);
+            return Encoding.ASCII.GetBytes(encoder.ExtractText(this.Bitmap, key));
         }
 
-        public void SaveImage(string path)
+        public void SaveInFile(string path)
         {
             if (File.Exists(path))
             {
@@ -81,6 +102,23 @@ namespace BLL
                 res = this.Bitmap.Width * this.Bitmap.Height * 3 / 8;
             }
             return res;
+        }
+
+        public byte[] Encrypt(byte[] bytes)
+        {
+            ImageConverter converter = new ImageConverter();
+            var bitmap = new Bitmap(this.Bitmap);
+            var decrypted = encoder.Embed(this.Bitmap, bytes);
+            ImageStatistic stc = new ImageStatistic();
+            stc.getStatistic(bitmap, decrypted);
+            this.Bitmap = decrypted;
+            return (byte[])converter.ConvertTo(this.Bitmap, typeof(byte[]));
+
+        }
+
+        public string ConvertBytesToString(byte[] bytes)
+        {
+            return ASCIIEncoding.ASCII.GetString(bytes);
         }
     }
 }

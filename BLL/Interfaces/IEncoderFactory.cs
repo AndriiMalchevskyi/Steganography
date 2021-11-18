@@ -4,10 +4,10 @@ using System.Text;
 
 namespace BLL
 {
-    public abstract class IEncoderFactory<T>
+    public interface IEncoderFactory<T>
     {
-        public abstract IEncoder<T> GetEncoderLSB();
+        public IEncoder<T> GetEncoderLSB();
 
-        public abstract IEncoder<T> GetEncoderSimple();
+        public IEncoder<T> GetEncoderSimple();
     }
 }

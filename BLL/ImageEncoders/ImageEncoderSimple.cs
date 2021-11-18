@@ -8,18 +8,18 @@ namespace BLL
 {
     public class ImageEncoderSimple : IEncoder<Bitmap>
     {
-        public override Bitmap EmbedText(Bitmap input, string text, string? key = null)
+        public Bitmap Embed(Bitmap input, byte[] bytes, string key = null)
         {
             var bmp = new Bitmap(input.Width, input.Height);
             int textIndex = 0;
             for (int i = 0; i < input.Height; i++)
             {
-                for (int j = 0; j < input.Width; j++) 
+                for (int j = 0; j < input.Width; j++)
                 {
                     var color = input.GetPixel(j, i);
-                    if (textIndex < text.Length)
+                    if (textIndex < bytes.Length)
                     {
-                        var later = (byte)text[textIndex++];
+                        var later = (byte)bytes[textIndex++];
 
                         var R1 = (byte)(later >> 6);
                         var G1 = (byte)((byte)(later << 2) >> 6);
@@ -35,7 +35,7 @@ namespace BLL
 
                         bmp.SetPixel(j, i, resultColor);
                     }
-                    else if (textIndex++ == text.Length)
+                    else if (textIndex++ == bytes.Length)
                     {
                         var later = '\0';
 
@@ -61,9 +61,14 @@ namespace BLL
             return bmp;
         }
 
-        public override string ExtractText(Bitmap input, string? key = null)
+        public Bitmap EmbedText(Bitmap input, string text, string? key = null)
         {
-            var text = "";
+            return this.Embed(input, Encoding.ASCII.GetBytes(text));
+        }
+
+        public byte[] Extract(Bitmap input, string key = null)
+        {
+            List<byte> result = new List<byte>();
             for (int i = 0; i < input.Height; i++)
             {
                 for (int j = 0; j < input.Width; j++)
@@ -77,16 +82,21 @@ namespace BLL
                     var A = (byte)(color.A << 6) >> 6;
 
                     later = (char)(R | G | B | A);
-                    text = text + later;
+                    result.Add((byte)later);
 
                     if (later == '\0')
                     {
-                        return text;
+                        return result.ToArray();
                     }
                 }
             }
 
-            return text;
+            return result.ToArray();
+        }
+
+        public string ExtractText(Bitmap input, string? key = null)
+        {
+            return ASCIIEncoding.ASCII.GetString(this.Extract(input));
         }
     }
 }

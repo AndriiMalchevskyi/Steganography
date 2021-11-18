@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Text;
 
 namespace BLL
 {
     public class ImageEncoderLSB: IEncoder<Bitmap>
     {
-        public override Bitmap EmbedText(Bitmap bmp, string text, string? key = null)
+        public Bitmap Embed(Bitmap input, byte[] bytes, string key = null)
         {
             State state = State.Hiding;
 
@@ -19,11 +21,11 @@ namespace BLL
 
             int R = 0, G = 0, B = 0;
 
-            for (int i = 0; i < bmp.Height; i++)
+            for (int i = 0; i < input.Height; i++)
             {
-                for (int j = 0; j < bmp.Width; j++)
+                for (int j = 0; j < input.Width; j++)
                 {
-                    Color pixel = bmp.GetPixel(j, i);
+                    Color pixel = input.GetPixel(j, i);
 
                     R = pixel.R - pixel.R % 2;
                     G = pixel.G - pixel.G % 2;
@@ -37,19 +39,20 @@ namespace BLL
                             {
                                 if ((pixelElementIndex - 1) % 3 < 2)
                                 {
-                                    bmp.SetPixel(j, i, Color.FromArgb(R, G, B));
+                                    var pixe = input.GetPixel(j, i);
+                                    input.SetPixel(j, i, Color.FromArgb(R, G, B));
                                 }
 
-                                return bmp;
+                                return input;
                             }
 
-                            if (charIndex >= text.Length)
+                            if (charIndex >= bytes.Length)
                             {
                                 state = State.Filling_With_Zeros;
                             }
                             else
                             {
-                                charValue = text[charIndex++];
+                                charValue = bytes[charIndex++];
                             }
                         }
 
@@ -80,8 +83,8 @@ namespace BLL
                                         B += charValue % 2;
                                         charValue /= 2;
                                     }
-
-                                    bmp.SetPixel(j, i, Color.FromArgb(R, G, B));
+                                    var pixe = input.GetPixel(j,i);
+                                    input.SetPixel(j, i, Color.FromArgb(R, G, B));
                                 }
                                 break;
                         }
@@ -96,21 +99,26 @@ namespace BLL
                 }
             }
 
-            return bmp;
+            return input;
         }
 
-        public override string ExtractText(Bitmap bmp, string? key = null)
+        public Bitmap EmbedText(Bitmap bmp, string text, string? key = null)
+        {
+            return this.Embed(bmp, Encoding.ASCII.GetBytes(text));
+        }
+
+        public byte[] Extract(Bitmap input, string key = null)
         {
             int colorUnitIndex = 0;
             int charValue = 0;
 
-            string extractedText = String.Empty;
+            List<byte> result = new List<byte>();
 
-            for (int i = 0; i < bmp.Height; i++)
+            for (int i = 0; i < input.Height; i++)
             {
-                for (int j = 0; j < bmp.Width; j++)
+                for (int j = 0; j < input.Width; j++)
                 {
-                    Color pixel = bmp.GetPixel(j, i);
+                    Color pixel = input.GetPixel(j, i);
 
                     for (int n = 0; n < 3; n++)
                     {
@@ -141,18 +149,21 @@ namespace BLL
 
                             if (charValue == 0)
                             {
-                                return extractedText;
+                                return result.ToArray();
                             }
 
-                            char c = (char)charValue;
-
-                            extractedText += c.ToString();
+                            result.Add((byte)charValue);
                         }
                     }
                 }
             }
 
-            return extractedText;
+            return result.ToArray();
+        }
+
+        public string ExtractText(Bitmap bmp, string? key = null)
+        {
+            return ASCIIEncoding.ASCII.GetString(this.Extract(bmp));
         }
 
         protected int ReverseBits(int n)
