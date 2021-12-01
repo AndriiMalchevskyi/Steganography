@@ -6,12 +6,15 @@ namespace BLL.Interfaces
 {
     public interface ISteganographer
     {
+        public Dictionary<string, double> Statistic { get; }
         public void SetNewSource(string filePath);
         public void SetNewSource(byte[] bytes);
 
         public bool SetLSBAlgorithm();
 
         public bool SetSimpleAlgorithm();
+
+        public bool SetKochZhaoAlgorithm();
 
         public byte[] Encrypt(string text);
 

@@ -13,12 +13,12 @@ namespace BLL.AudioEncoders
 
             int charValue = bytes[charIndex++];
 
-            if (input.Length < bytes.Length * 8)
+            if (input.Length / 2 < bytes.Length * 8)
             {
                 throw new Exception("little memory for wav lsb");
             }
-
-            for (int i = 0; i < input.Length; i++)
+            int currentBit = 0;
+            for (int i = 1; i < input.Length; i+=2)
             {
                 var currentByte = input[i] - input[i] % 2;
 
@@ -26,8 +26,8 @@ namespace BLL.AudioEncoders
                 charValue /= 2;
 
                 result[i] = (byte)currentByte;
-
-                if (i % 8 == 0 && i > 0)
+                currentBit++;
+                if (currentBit == 8)
                 {
                     if (charIndex < bytes.Length)
                     {
@@ -43,6 +43,7 @@ namespace BLL.AudioEncoders
                         Array.Copy(input, i, result, i, result.Length - i);
                         break;
                     }
+                    currentBit = 0;
                 }
             }
 
@@ -59,12 +60,12 @@ namespace BLL.AudioEncoders
             List<byte> result = new List<byte>();
 
             int charValue = 0;
-
-            for (int i = 0; i < input.Length; i++)
+            int currentBit = 0;
+            for (int i = 1; i < input.Length; i+=2)
             {
                 charValue = charValue * 2 + input[i] % 2;
-
-                if (i % 8 == 0 && i > 0)
+                currentBit++;
+                if (currentBit == 8)
                 {
                     charValue = ReverseBits(charValue);
 
@@ -75,6 +76,7 @@ namespace BLL.AudioEncoders
 
                     result.Add((byte)charValue);
                     charValue = 0;
+                    currentBit = 0;
                 }
             }
 

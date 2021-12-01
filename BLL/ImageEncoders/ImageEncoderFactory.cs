@@ -15,7 +15,12 @@ namespace BLL
 
         public IEncoder<Bitmap> GetEncoderSimple()
         {
-            return new ImageEncoderSimple();
+            return new ImageEncoderLSB2();
+        }
+
+        public IEncoder<Bitmap> GetEncoderKochZhao()
+        {
+            return new ImageEncoderKochZhao();
         }
     }
 }

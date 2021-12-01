@@ -13,7 +13,7 @@ namespace BLL.AudioEncoders
 
         public IEncoder<byte[]> GetEncoderSimple()
         {
-            return new AudioEncoderSimple();
+            return new AudioEncoderLSB2();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace BLL
     {
         private IEncoder<byte[]> encoder;
         public AudioWAV Audio { get; private set; }
-
+        public Dictionary<string, double> Statistic { get; private set; }
         public AudioSteganographer() { }
         public AudioSteganographer(string audioPath)
         {
@@ -22,6 +22,7 @@ namespace BLL
         public void SetNewSource(string audioPath)
         {
             this.Audio = new AudioWAV(audioPath);
+            var d = 0;
         }
         public void SetNewSource(byte[] bytes)
         {
@@ -60,7 +61,7 @@ namespace BLL
         {
             AudioStatistic stc = new AudioStatistic();
             var decrypted = encoder.Embed(this.Audio.GetSoundData(), bytes);
-            stc.getStatistic(this.Audio.GetSoundData(), decrypted);
+            this.Statistic = stc.getStatistic(this.Audio.GetSoundData(), decrypted);
             return Audio.SetSoundData(decrypted);
         }
 
@@ -82,13 +83,13 @@ namespace BLL
         public int GetFreeSpace()
         {
             int res = this.Audio.DataSize / 2;
-            if (this.Audio != null && encoder.GetType() == typeof(AudioEncoderSimple))
+            if (this.Audio != null && encoder.GetType() == typeof(AudioEncoderLSB2))
             {
-                res = this.Audio.DataSize / 2;
+                res = this.Audio.DataSize / 4;
             }
             else if (this.Audio != null && encoder.GetType() == typeof(AudioEncoderLSB))
             {
-                res = this.Audio.DataSize / 8;
+                res = this.Audio.DataSize / 8 / 2;
             }
             return res;
         }
@@ -96,6 +97,11 @@ namespace BLL
         public string ConvertBytesToString(byte[] bytes)
         {
             return ASCIIEncoding.ASCII.GetString(bytes);
+        }
+
+        public bool SetKochZhaoAlgorithm()
+        {
+            throw new NotImplementedException();
         }
     }
 }

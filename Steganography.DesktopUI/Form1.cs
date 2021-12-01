@@ -120,6 +120,8 @@ namespace Steganography.DesktopUI
             }
         }
 
+
+
         private void OpenOriginalFile()
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
@@ -127,9 +129,12 @@ namespace Steganography.DesktopUI
             if (fileDialog.ShowDialog() == DialogResult.OK)
             {
                 this.baseFilePath = fileDialog.FileName;
-                this.console.Text += "File selected: "+ this.baseFilePath + System.Environment.NewLine;
+                this.console.Text += "File selected: " + this.baseFilePath + System.Environment.NewLine;
                 if (!fileDialog.FileName.EndsWith(".wav"))
                 {
+                    var tempImage = new Bitmap(fileDialog.FileName);
+                    this.kochZhaoChecker.Enabled = true;
+                    this.pictureBox.Image = tempImage;
                     ConfigureSteganographer(false);
                     this.steganographer.SetNewSource(fileDialog.FileName);
                 }
@@ -137,18 +142,9 @@ namespace Steganography.DesktopUI
                 {
                     ConfigureSteganographer(true);
                     this.steganographer.SetNewSource(fileDialog.FileName);
-                    //var EncryptResult = this.steganographer.Encrypt("HELLO WORLD! HELLO WORLD! HELLO WORLD! HELLO WORLD! HELLO WORLD! HELLO WORLD! HELLO WORLD! HELLO WORLD! HELLO WORLD! HELLO WORLD! HELLO WORLD! HELLO WORLD! HELLO WORLD! HELLO WORLD! HELLO WORLD! HELLO WORLD! HELLO WORLD! ");
-                    //var DecryptResult = this.steganographer.Decrypt();
-                    
-                    //SaveFileDialog saveFileDialog = new SaveFileDialog();
-                    //saveFileDialog.Filter = "WAV файл(*.wav)|*.wav";
-
-                    //if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                    //{
-                    //    this.steganographer.SaveInFile(saveFileDialog.FileName);
-                    //}
+                    this.kochZhaoChecker.Enabled = false;
                 }
-                this.CalculateFreeAndUsedSpace();
+                this.CalculateFreeSpace();
                 this.CheckDataAndOriginalFilesFreeSpace();
             }
         }
@@ -162,6 +158,7 @@ namespace Steganography.DesktopUI
                 this.dataFilePath = fileDialog.FileName;
                 this.dataFileBytes = File.ReadAllBytes(dataFilePath);
                 this.console.Text += "Data file selected: " + this.dataFilePath + System.Environment.NewLine;
+                this.CalculateDataSpace();
                 this.CheckDataAndOriginalFilesFreeSpace();
             }
         }
@@ -173,6 +170,8 @@ namespace Steganography.DesktopUI
             this.steganographer.Encrypt(inputBytes);
             this.console.Text += "Encrypt time: ";
             this.EndTimer();
+
+            this.ShowStatistic();
         }
 
         private void DecryptText()
@@ -183,6 +182,19 @@ namespace Steganography.DesktopUI
             this.EndTimer();
         }
 
+        private void ShowStatistic()
+        {
+
+            var statistic = this.steganographer.Statistic;
+            this.console.Text += "*****STATISTIC*****" + System.Environment.NewLine;
+            this.console.Text += "SNR  = " + statistic["SNR"].ToString("F6") + System.Environment.NewLine;
+            this.console.Text += "NAAD = " + statistic["NAAD"].ToString("F6") + System.Environment.NewLine;
+            this.console.Text += "IF   = " + statistic["IF"].ToString("F6") + System.Environment.NewLine;
+            this.console.Text += "MSE  = " + statistic["MSE"].ToString("F6") + System.Environment.NewLine;
+            this.console.Text += "AD   = " + statistic["AD"].ToString("F6") + System.Environment.NewLine;
+            this.console.Text += "*******************" + System.Environment.NewLine;
+        }
+
         private void AlgorithmChecked()
         {
             if (this.lsbChecker.Checked)
@@ -190,15 +202,23 @@ namespace Steganography.DesktopUI
                 if (this.steganographer.SetLSBAlgorithm())
                 {
                     this.console.Text += "Steganographer algorithm selected: LSB" + System.Environment.NewLine;
-                    this.CalculateFreeAndUsedSpace();
+                    this.CalculateFreeSpace();
                 }
             }
             else if (this.simpleChecker.Checked)
             {
                 if (this.steganographer.SetSimpleAlgorithm())
                 {
-                    this.console.Text += "Steganographer algorithm selected: Simple" + System.Environment.NewLine;
-                    this.CalculateFreeAndUsedSpace();
+                    this.console.Text += "Steganographer algorithm selected: LSB2" + System.Environment.NewLine;
+                    this.CalculateFreeSpace();
+                }
+            }
+            else if (this.kochZhaoChecker.Checked)
+            {
+                if (this.steganographer.SetKochZhaoAlgorithm())
+                {
+                    this.console.Text += "Steganographer algorithm selected: Koch-Zhao" + System.Environment.NewLine;
+                    this.CalculateFreeSpace();
                 }
             }
         }
@@ -211,12 +231,23 @@ namespace Steganography.DesktopUI
             this.baseFilePath = "";
             this.dataFilePath = "";
             this.decryptedResult = null;
-    }
+        }
 
-        private void CalculateFreeAndUsedSpace()
+        private void CalculateFreeSpace()
         {
             var free = this.steganographer.GetFreeSpace();
-            this.console.Text += "Free space: " + free + System.Environment.NewLine;
+            var kb = free / 1024.0;
+            var mb = kb / 1024.0;
+            this.console.Text += "Free space: " + free + " B = " + kb.ToString("F2") + " KB = " + mb.ToString("F2") + " MB" + System.Environment.NewLine;
+        }
+
+        private void CalculateDataSpace()
+        {
+            var dataSize = this.dataFileBytes.Length;
+            var kb = dataSize / 1024.0;
+            var mb = kb / 1024.0;
+            this.console.Text += "Data size: " + dataSize + " B = " + kb.ToString("F2") + " KB = " + mb.ToString("F2") + " MB" + System.Environment.NewLine;
+
         }
         #endregion
 

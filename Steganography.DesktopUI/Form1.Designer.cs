@@ -37,9 +37,12 @@ namespace Steganography.DesktopUI
             this.simpleChecker = new System.Windows.Forms.RadioButton();
             this.console = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.kochZhaoChecker = new System.Windows.Forms.RadioButton();
             this.openDataFileButton = new System.Windows.Forms.Button();
             this.saveDecryptedFileButton = new System.Windows.Forms.Button();
+            this.pictureBox = new System.Windows.Forms.PictureBox();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // openOriginalFileButton
@@ -100,9 +103,9 @@ namespace Steganography.DesktopUI
             this.simpleChecker.AutoSize = true;
             this.simpleChecker.Location = new System.Drawing.Point(6, 47);
             this.simpleChecker.Name = "simpleChecker";
-            this.simpleChecker.Size = new System.Drawing.Size(61, 19);
+            this.simpleChecker.Size = new System.Drawing.Size(50, 19);
             this.simpleChecker.TabIndex = 9;
-            this.simpleChecker.Text = "Simple";
+            this.simpleChecker.Text = "LSB2";
             this.simpleChecker.UseVisualStyleBackColor = true;
             this.simpleChecker.CheckedChanged += new System.EventHandler(this.Checker_CheckedChanged);
             // 
@@ -117,6 +120,7 @@ namespace Steganography.DesktopUI
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.kochZhaoChecker);
             this.groupBox1.Controls.Add(this.lsbChecker);
             this.groupBox1.Controls.Add(this.simpleChecker);
             this.groupBox1.Location = new System.Drawing.Point(422, 13);
@@ -125,6 +129,18 @@ namespace Steganography.DesktopUI
             this.groupBox1.TabIndex = 11;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Algorithm";
+            // 
+            // kochZhaoChecker
+            // 
+            this.kochZhaoChecker.AutoSize = true;
+            this.kochZhaoChecker.Enabled = false;
+            this.kochZhaoChecker.Location = new System.Drawing.Point(6, 73);
+            this.kochZhaoChecker.Name = "kochZhaoChecker";
+            this.kochZhaoChecker.Size = new System.Drawing.Size(84, 19);
+            this.kochZhaoChecker.TabIndex = 10;
+            this.kochZhaoChecker.TabStop = true;
+            this.kochZhaoChecker.Text = "Koch-Zhao";
+            this.kochZhaoChecker.UseVisualStyleBackColor = true;
             // 
             // openDataFileButton
             // 
@@ -146,11 +162,21 @@ namespace Steganography.DesktopUI
             this.saveDecryptedFileButton.UseVisualStyleBackColor = true;
             this.saveDecryptedFileButton.Click += new System.EventHandler(this.saveDecryptedFileButton_Click);
             // 
+            // pictureBox
+            // 
+            this.pictureBox.Location = new System.Drawing.Point(484, 158);
+            this.pictureBox.Name = "pictureBox";
+            this.pictureBox.Size = new System.Drawing.Size(160, 116);
+            this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox.TabIndex = 14;
+            this.pictureBox.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(724, 278);
+            this.Controls.Add(this.pictureBox);
             this.Controls.Add(this.saveDecryptedFileButton);
             this.Controls.Add(this.openDataFileButton);
             this.Controls.Add(this.groupBox1);
@@ -163,6 +189,7 @@ namespace Steganography.DesktopUI
             this.Text = "Steganography";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -180,6 +207,8 @@ namespace Steganography.DesktopUI
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button openDataFileButton;
         private System.Windows.Forms.Button saveDecryptedFileButton;
+        private System.Windows.Forms.RadioButton kochZhaoChecker;
+        private System.Windows.Forms.PictureBox pictureBox;
     }
 }
 

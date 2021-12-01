@@ -18,6 +18,38 @@ namespace BLL.Models
         public int DataSize { get; private set; }
         public short DataStartFromIndex { get; private set; }
 
+        public int Duration
+        {
+            get
+            {
+                return DataSize / ByteRate;
+            }
+        }
+
+        public int FrameSize
+        {
+            get
+            {
+                return BitsPerSample * Channels;
+            }
+        }
+
+        public int Frames
+        {
+            get
+            {
+                return DataSize / FrameSize;
+            }
+        }
+
+        public int FrameRate
+        {
+            get
+            {
+                return Frames / Duration;
+            }
+        }
+
         public AudioWAV(string filePath)
         {
             var bytes = File.ReadAllBytes(filePath);
@@ -44,6 +76,11 @@ namespace BLL.Models
             Array.Copy(arr, 0, audioBytesArr, DataStartFromIndex, DataSize);
 
             return GetSoundData();
+        }
+
+        public byte[] GetBytes()
+        {
+            return audioBytesArr;
         }
 
         private void SetupMetadata(byte[] arr)

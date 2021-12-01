@@ -11,6 +11,7 @@ namespace BLL
     public class ImageSteganographer: ISteganographer
     {
         private IEncoder<Bitmap> encoder;
+        public Dictionary<string, double> Statistic { get; private set; }
         public Bitmap Bitmap { get; private set; }
 
         public ImageSteganographer()
@@ -48,6 +49,18 @@ namespace BLL
             if (this.encoder == null || this.encoder.GetType() != imageEncoderFactory.GetEncoderLSB().GetType())
             {
                 this.encoder = imageEncoderFactory.GetEncoderLSB();
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool SetKochZhaoAlgorithm()
+        {
+            var imageEncoderFactory = new ImageEncoderFactory();
+            if (this.encoder == null || this.encoder.GetType() != imageEncoderFactory.GetEncoderKochZhao().GetType())
+            {
+                this.encoder = imageEncoderFactory.GetEncoderKochZhao();
                 return true;
             }
 
@@ -93,13 +106,17 @@ namespace BLL
 
 
             int res = 0;
-            if (this.Bitmap != null && encoder.GetType() == typeof(ImageEncoderSimple))
+            if (this.Bitmap != null && encoder.GetType() == typeof(ImageEncoderLSB2))
             {
                 res = this.Bitmap.Width * this.Bitmap.Height;
             }
             else if (this.Bitmap != null && encoder.GetType() == typeof(ImageEncoderLSB))
             {
                 res = this.Bitmap.Width * this.Bitmap.Height * 3 / 8;
+            }
+            else if (this.Bitmap != null && encoder.GetType() == typeof(ImageEncoderKochZhao))
+            {
+                res = this.Bitmap.Width * this.Bitmap.Height / 512;
             }
             return res;
         }
@@ -110,7 +127,7 @@ namespace BLL
             var bitmap = new Bitmap(this.Bitmap);
             var decrypted = encoder.Embed(this.Bitmap, bytes);
             ImageStatistic stc = new ImageStatistic();
-            stc.getStatistic(bitmap, decrypted);
+            this.Statistic = stc.getStatistic(bitmap, decrypted);
             this.Bitmap = decrypted;
             return (byte[])converter.ConvertTo(this.Bitmap, typeof(byte[]));
 

@@ -8,13 +8,23 @@ namespace BLL.Models
 {
     public class ImageStatistic
     {
-        public void getStatistic(Bitmap original, Bitmap decrypted)
+        public Dictionary<string, double> getStatistic(Bitmap original, Bitmap decrypted)
         {
+            var map = new Dictionary<string, double>();
+
             double SNR = getSignalNoiseRatio(original, decrypted);
             double NAAD = getNormalizedAverageAbsoluteDifference(original, decrypted);
             double IF = getImageFidelity(original, decrypted);
             double MSE = getMeanSquareError(original, decrypted);
             double AD = getAbsoluteDifference(original, decrypted);
+
+            map.Add("SNR", SNR);
+            map.Add("NAAD", NAAD);
+            map.Add("IF", IF);
+            map.Add("MSE", MSE);
+            map.Add("AD", AD);
+
+            return map;
         }
 
         private double getSignalNoiseRatio(Bitmap original, Bitmap decrypted)
@@ -22,9 +32,9 @@ namespace BLL.Models
             double result = 0;
             double A = 0;
             double B = 0;
-            for (int i = 0; i < original.Height; i++)
+            for (int i = 0; i < decrypted.Height; i++)
             {
-                for (int j = 0; j < original.Width; j++)
+                for (int j = 0; j < decrypted.Width; j++)
                 {
                     var pixel1 = original.GetPixel(j, i);
                     var pixel2 = decrypted.GetPixel(j, i);
@@ -51,9 +61,9 @@ namespace BLL.Models
             double result = 0;
             double A = 0;
             double B = 0;
-            for (int i = 0; i < original.Height; i++)
+            for (int i = 0; i < decrypted.Height; i++)
             {
-                for (int j = 0; j < original.Width; j++)
+                for (int j = 0; j < decrypted.Width; j++)
                 {
                     var pixel1 = original.GetPixel(j, i);
                     var pixel2 = decrypted.GetPixel(j, i);
@@ -81,9 +91,9 @@ namespace BLL.Models
             double result = 0;
             double A = 0;
             double B = 0;
-            for (int i = 0; i < original.Height; i++)
+            for (int i = 0; i < decrypted.Height; i++)
             {
-                for (int j = 0; j < original.Width; j++)
+                for (int j = 0; j < decrypted.Width; j++)
                 {
                     var pixel1 = original.GetPixel(j, i);
                     var pixel2 = decrypted.GetPixel(j, i);
@@ -110,9 +120,9 @@ namespace BLL.Models
         {
             double result = 0;
             double A = 0;
-            for (int i = 0; i < original.Height; i++)
+            for (int i = 0; i < decrypted.Height; i++)
             {
-                for (int j = 0; j < original.Width; j++)
+                for (int j = 0; j < decrypted.Width; j++)
                 {
                     var pixel1 = original.GetPixel(j, i);
                     var pixel2 = decrypted.GetPixel(j, i);
@@ -131,9 +141,9 @@ namespace BLL.Models
         {
             double result = 0;
             double A = 0;
-            for (int i = 0; i < original.Height; i++)
+            for (int i = 0; i < decrypted.Height; i++)
             {
-                for (int j = 0; j < original.Width; j++)
+                for (int j = 0; j < decrypted.Width; j++)
                 {
                     var pixel1 = original.GetPixel(j, i);
                     var pixel2 = decrypted.GetPixel(j, i);

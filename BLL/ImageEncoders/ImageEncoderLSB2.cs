@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BLL
 {
-    public class ImageEncoderSimple : IEncoder<Bitmap>
+    public class ImageEncoderLSB2 : IEncoder<Bitmap>
     {
         public Bitmap Embed(Bitmap input, byte[] bytes, string key = null)
         {
